@@ -103,7 +103,12 @@ func newDuCmd() *cobra.Command {
 
 func (o *duOptions) run(cmd *cobra.Command) error {
 	filterNames := []string{"size", "name"}
-	_, searchFilter, err := utils.ParseFilterParameters(o.filter, filterNames)
+	filters := utils.NewFilters(nil, filterNames)
+	err := filters.AddFilters(o.filter)
+	if err != nil {
+		return err
+	}
+	searchFilter, err := filters.GetJson(filterNames)
 	if err != nil {
 		return err
 	}
